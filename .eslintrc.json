@@ -11,6 +11,8 @@
   "rules": {
     "linebreak-style": "off",
     "no-underscore-dangle": "off",
-    "consistent-return": "warn"
+    "consistent-return": "warn",
+    "import/no-extraneous-dependencies": ["warn", { "devDependencies": true }],
+    "object-curly-newline": "warn"
   }
 }
