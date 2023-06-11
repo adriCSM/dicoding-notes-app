@@ -6,6 +6,8 @@ exports.up = (pgm) => {
   pgm.addColumn('notes', {
     owner: {
       type: 'VARCHAR(50)',
+      reference: 'users',
+      onDelete: 'cascade',
     },
   });
 };

@@ -17,7 +17,6 @@ class NotesHandler {
       const { title = 'untitled', tags, body } = request.payload;
       const { id: credentialId } = request.auth.credentials;
       const noteId = await this._service.addNote({ title, tags, body, owner: credentialId });
-
       const response = h.response({
         status: 'Success',
         message: 'Catatan berhasil ditambahkan',
@@ -51,6 +50,7 @@ class NotesHandler {
 
   async getNotesHandler(request) {
     const { id: credentialId } = request.auth.credentials;
+
     const notes = await this._service.getNotes(credentialId);
     return {
       status: 'Success',
@@ -64,7 +64,9 @@ class NotesHandler {
     try {
       const { id } = request.params;
       const { id: credentialId } = request.auth.credentials;
-      await this._service.verifyNoteOwner(id, credentialId);
+
+      await this._service.verifyNoteAccess(id, credentialId);
+      // error di verifyNoteAcces
       const note = await this._service.getNoteById(id);
       return {
         status: 'Success',
@@ -99,8 +101,7 @@ class NotesHandler {
       this._validator.validateNotePayload(request.payload);
       const { id } = request.params;
       const { id: credentialId } = request.auth.credentials;
-
-      await this._service.verifyNoteOwner(id, credentialId);
+      await this._service.verifyNoteAccess(id, credentialId);
       await this._service.editNoteById(id, request.payload);
       return {
         status: 'Success',

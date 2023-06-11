@@ -13,8 +13,9 @@
     "no-underscore-dangle": "off",
     "consistent-return": "warn",
     "import/no-extraneous-dependencies": ["warn", { "devDependencies": false }],
-    "object-curly-newline": "warn",
+    "object-curly-newline": "off",
     "no-console": "warn",
-    "import/order": "off"
+    "import/order": "off",
+    "max-len": ["error", { "code": 200 }]
   }
 }

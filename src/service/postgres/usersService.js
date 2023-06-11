@@ -30,11 +30,10 @@ class UsersService {
     const id = `user-${nanoid(16)}`;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
-    const createdAt = new Date().toISOString();
-    const updatedAt = createdAt;
+
     const query = {
-      text: 'INSERT INTO users VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
-      values: [id, username, hash, fullname, createdAt, updatedAt],
+      text: 'INSERT INTO users VALUES ($1,$2,$3,$4) RETURNING id',
+      values: [id, username, hash, fullname],
     };
     const result = await this.pool.query(query);
     if (!result.rows.length) {
@@ -77,6 +76,15 @@ class UsersService {
       throw new AuthenticationError('Kredensial yang Anda berikan salah');
     }
     return id;
+  }
+
+  async getUsersByUsername(username) {
+    const query = {
+      text: 'SELECT id, username, fullname FROM users WHERE username LIKE $1',
+      values: [`%${username}%`],
+    };
+    const result = await this.pool.query(query);
+    return result.rows;
   }
 }
 module.exports = UsersService;
