@@ -10,11 +10,15 @@ class AuthenticationHandler {
 
   async postAuthenticationHandler(request, h) {
     try {
+      // validasi payload
       this._validator.validatePostAuthenticationPaylod(request.payload);
       const { username, password } = request.payload;
+      // cek apakah user ada didalam database
       const id = await this._usersService.verifyUserCredential(username, password);
+      // generate refreshtoken dan accesstoken
       const refreshToken = this._tokenManager.generetRefreshToken({ id });
       const accessToken = this._tokenManager.generetAccessToken({ id });
+      // menambahkan refreshToken kedalam database
       await this._authenticationsService.addRefreshToken(refreshToken);
       const response = h.response({
         status: 'success',
@@ -50,9 +54,11 @@ class AuthenticationHandler {
     try {
       this._validator.validatePutAuthenticationPayload(request.payload);
       const { refreshToken } = request.payload;
-
+      // mengecek apaka refreshToken payload ada di database atau tidak
       await this._authenticationsService.verifyRefreshToken(refreshToken);
+      // mengecek apakah refreshtoken memiliki signiture yang sama pada database
       const { id } = this._tokenManager.verifyRefreshToken(refreshToken);
+      // memperbarui access token
       const accessToken = this._tokenManager.generetAccessToken({ id });
       return {
         status: 'success',

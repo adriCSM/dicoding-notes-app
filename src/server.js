@@ -18,6 +18,10 @@ const AuthenticationsValidator = require('./validator/authentication');
 const collaborations = require('./api/collaborations');
 const CollaborationsService = require('./service/postgres/collaborationsService');
 const CollaborationsValidator = require('./validator/collaborations');
+// exports
+const _exports = require('./api/exports');
+const ProducerService = require('./service/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
 
 const init = async () => {
   const collaborationsService = new CollaborationsService();
@@ -47,7 +51,7 @@ const init = async () => {
       aud: false,
       iss: false,
       sub: false,
-      maxAgeSec: process.env.ACCEST_TOKEN_AGE,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
     },
     validate: (artifacts) => ({
       isValid: true,
@@ -87,6 +91,13 @@ const init = async () => {
         collaborationsService,
         notesService,
         validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
       },
     },
   ]);
