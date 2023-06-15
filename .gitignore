@@ -1,3 +1,5 @@
 /node_modules
 .env
 .prod.env
+key_pem_aws
+src/api/uploads/file
